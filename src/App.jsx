@@ -1,7 +1,10 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
+import { Grommet } from 'grommet';
+import { grommet } from 'grommet/themes';
 
 import AppAPI from './services/app-api';
 
@@ -9,6 +12,8 @@ import reducers from './store/index';
 
 import config from './config';
 import './App.css';
+
+import AppShell from './components/AppShell/AppShell';
 
 const App = () => {
     const {
@@ -35,7 +40,11 @@ const App = () => {
 
     return (
         <Provider store={store}>
-            <h1>hey</h1>
+            <BrowserRouter>
+                <Grommet theme={grommet}>
+                    <AppShell />
+                </Grommet>
+            </BrowserRouter>
         </Provider>
     );
 };

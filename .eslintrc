@@ -1,0 +1,23 @@
+{
+    "extends": "airbnb",
+    "rules": {
+        "indent": [2, 4, { "SwitchCase": 1 }],
+        "react/jsx-indent": [2, 4],
+        "react/jsx-indent-props": [2, 4],
+        "import/prefer-default-export": 0,
+        "react/destructuring-assignment": 0,
+        "operator-linebreak": [
+            "error",
+            "after",
+            {
+              "overrides": {
+                "?": "after"
+              }
+            }
+          ]
+    },
+    "env": {
+        "browser": true,
+        "jest": true
+    }
+}

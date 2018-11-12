@@ -14,14 +14,31 @@ class AppAPI {
         return `${this.baseUrl}/${endpoint}`;
     }
 
+    static unwrapData(axiosRequest) {
+        return new Promise((resolve, reject) => {
+            axiosRequest
+                .then(res => resolve(res.data))
+                .catch(error => reject(error));
+        });
+    }
+
+    /**
+     * Gets a new guest user
+     *
+     * @returns {AxiosPromise<any>} resolves to userId string
+     */
+    loginGuest() {
+        return AppAPI.unwrapData(axios.get(this.makeUrl('guest-home')));
+    }
+
     /**
      * Gets all classrooms for a given building
      *
-     * @param buildingId string ID matching a building the api is aware of
-     * @returns {AxiosPromise<any>} resolves to an array of classrooms for that building
+     * @param { username, password } object user details
+     * @returns {AxiosPromise<any>} resolves to a user entity
      */
-    fetchClassrooms(buildingId) {
-        return axios.get(this.makeUrl(`buildings/${buildingId}/classrooms`));
+    loginUser({ username, password }) {
+        return axios.get(this.makeUrl('home', `username=${username}&password=${password}`));
     }
 }
 

@@ -1,3 +1,3 @@
 export default {
-    apiUrl: 'https://pacific-inlet-20884.herokuapp.com/yamo-api',
+    apiUrl: 'http://localhost:8080',
 };
