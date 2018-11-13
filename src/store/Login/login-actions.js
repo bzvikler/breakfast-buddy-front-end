@@ -24,13 +24,14 @@ export const asyncLoginGuestUser = () => async (dispatch, _, { AppApi }) => {
     }
 };
 
-export const asyncLoginUser = userDetails => async (dispatch, _, { AppApi }) => {
+export const asyncLoginUser = (userDetails, history) => async (dispatch, _, { AppApi }) => {
     dispatch(loginRequest());
 
     try {
         const user = await AppApi.loginUser(userDetails);
 
         dispatch(userLoginSuccess(user));
+        history.push('/');
     } catch (error) {
         console.log('user login failed: ', error);
 

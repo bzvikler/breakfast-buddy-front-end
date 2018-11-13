@@ -38,7 +38,9 @@ class AppAPI {
      * @returns {AxiosPromise<any>} resolves to a user entity
      */
     loginUser({ username, password }) {
-        return axios.get(this.makeUrl('home', `username=${username}&password=${password}`));
+        return AppAPI.unwrapData(
+            axios.get(this.makeUrl('home', `username=${username}&password=${password}`))
+        );
     }
 }
 

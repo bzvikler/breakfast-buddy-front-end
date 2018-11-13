@@ -8,18 +8,31 @@ import {
     Button,
     Text,
 } from 'grommet';
-import { Close } from 'grommet-icons';
+import { FormDown } from 'grommet-icons';
 import './Navbar.css';
+
+const linkStyle = {
+    textDecoration: 'none',
+    outline: 'none',
+    color: 'inherit',
+};
 
 const DropContent = ({ onClose }) => (
     <Box pad="small">
-        <Box direction="row" justify="between" align="center">
-            <Heading level={3} margin="small">
-                Heading
-            </Heading>
-            <Button icon={<Close />} onClick={onClose} />
-        </Box>
-        <Text>Content</Text>
+        <Button>
+            <Box direction="row" gap="medium" align="center" pad="small">
+                <Text>
+                    My Account
+                </Text>
+            </Box>
+        </Button>
+        <Button>
+            <Box direction="row" gap="medium" align="center" pad="small">
+                <Text>
+                    Logout
+                </Text>
+            </Box>
+        </Button>
     </Box>
 );
 
@@ -54,18 +67,26 @@ class Navbar extends Component {
                 align="center"
                 direction="row"
                 elevation="small"
+                style={{ zIndex: 1 }}
             >
+                <Box basis="full">
+                    <Link to="/" style={linkStyle}>
+                        <Heading
+                            level={3}
+                            margin="xsmall"
+                            style={{ marginRight: 'auto' }}
+                        >
+                            Bb
+                        </Heading>
+                    </Link>
+                </Box>
                 {
                     (isGuest || !user) ?
                         (
                             <Link
                                 to="/login"
                                 href="/login"
-                                style={{
-                                    textDecoration: 'none',
-                                    outline: 'none',
-                                    color: 'inherit',
-                                }}
+                                style={linkStyle}
                             >
                                 <Button>
                                     <Box direction="row" gap="medium" align="center" pad="small">
@@ -85,9 +106,10 @@ class Navbar extends Component {
                                 padding="medium"
                             >
                                 <Box direction="row" gap="medium" align="center" pad="small">
-                                    <Text>
-                                        Welcome
+                                    <Text truncate>
+                                        {`Welcome, ${user.name}`}
                                     </Text>
+                                    <FormDown />
                                 </Box>
                             </DropButton>
                         )
@@ -113,6 +135,7 @@ Navbar.defaultProps = {
 Navbar.propTypes = {
     user: PropTypes.shape({
         id: PropTypes.string,
+        name: PropTypes.string,
     }),
     isGuest: PropTypes.bool,
 };

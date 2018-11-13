@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { Grommet } from 'grommet';
-import { grommet } from 'grommet/themes';
+import { overEasy } from './over-easy';
 
 import AppAPI from './services/app-api';
 
@@ -41,7 +41,7 @@ const App = () => {
     return (
         <Provider store={store}>
             <BrowserRouter>
-                <Grommet theme={grommet}>
+                <Grommet theme={overEasy}>
                     <AppShell />
                 </Grommet>
             </BrowserRouter>

@@ -17,7 +17,13 @@ app.use((req, res, next) => {
 });
 
 app.get('/home', (req, res) => {
-    res.send({ id: '12345' });
+    setTimeout(() => {
+        res.send({
+            id: '12345',
+            name: 'Rojin',
+            owner: false,
+        });
+    }, 1000);
 });
 
 app.get('/guest-home', (req, res) => {
