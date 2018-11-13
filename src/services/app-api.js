@@ -32,14 +32,26 @@ class AppAPI {
     }
 
     /**
-     * Gets all classrooms for a given building
+     * Gets a previously signed up user
      *
      * @param { username, password } object user details
      * @returns {AxiosPromise<any>} resolves to a user entity
      */
     loginUser({ username, password }) {
         return AppAPI.unwrapData(
-            axios.get(this.makeUrl('home', `username=${username}&password=${password}`))
+            axios.get(this.makeUrl('home', `username=${username}&password=${password}`)),
+        );
+    }
+
+    /**
+     * Posts a new user
+     *
+     * @param { username, password, name, img, owner } object user details
+     * @returns {AxiosPromise<any>} resolves to a user entity
+     */
+    signUpUser(signUpDetails) {
+        return AppAPI.unwrapData(
+            axios.post(this.makeUrl('signup'), signUpDetails),
         );
     }
 }

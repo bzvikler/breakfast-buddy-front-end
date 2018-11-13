@@ -172,3 +172,29 @@
         transform 200ms ease-out,
         opacity 200ms ease-out;
 }
+
+.password-mismatch-enter {
+    opacity: 0;
+    height: 0;
+}
+
+.password-mismatch-enter-active {
+    height: 19px;
+    opacity: 1;
+    transition:
+        height 200ms ease-out,
+        opacity 200ms ease-out;
+}
+
+.password-mismatch-exit {
+    height: 19px;
+    opacity: 1;
+}
+
+.password-mismatch-exit-active {
+    height: 0;
+    opacity: 0;
+    transition:
+        transform 200ms ease-out,
+        opacity 200ms ease-out;
+}

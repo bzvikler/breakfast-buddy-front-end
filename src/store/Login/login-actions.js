@@ -38,3 +38,18 @@ export const asyncLoginUser = (userDetails, history) => async (dispatch, _, { Ap
         dispatch(loginFailure(error));
     }
 };
+
+export const asyncSignUpUser = (userDetails, history) => async (dispatch, _, { AppApi }) => {
+    dispatch(loginRequest());
+
+    try {
+        const user = await AppApi.signUpUser(userDetails);
+
+        dispatch(userLoginSuccess(user));
+        history.push('/');
+    } catch (error) {
+        console.log('user sign up failed: ', error);
+
+        dispatch(loginFailure(error));
+    }
+};

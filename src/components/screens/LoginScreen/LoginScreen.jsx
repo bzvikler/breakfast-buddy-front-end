@@ -11,7 +11,7 @@ import {
     Text,
 } from 'grommet';
 
-import { asyncLoginUser } from '../../../store/Login/login-actions';
+import { asyncLoginUser, asyncSignUpUser } from '../../../store/Login/login-actions';
 
 import './LoginScreen.css';
 
@@ -21,14 +21,19 @@ class LoginScreen extends Component {
 
         this.state = {
             username: '',
+            name: '',
             password: '',
             confirmedPassword: '',
+            passwordMismatch: false,
             isSignUp: false,
         };
 
         this.onUsernameChange = this.onUsernameChange.bind(this);
+        this.onNameChange = this.onNameChange.bind(this);
         this.onPasswordChange = this.onPasswordChange.bind(this);
+        this.onConfirmedPasswordChange = this.onConfirmedPasswordChange.bind(this);
         this.onLoginSubmit = this.onLoginSubmit.bind(this);
+        this.onSignUpSubmit = this.onSignUpSubmit.bind(this);
         this.toggleSignup = this.toggleSignup.bind(this);
     }
 
@@ -39,10 +44,26 @@ class LoginScreen extends Component {
         }));
     }
 
+    onNameChange(name) {
+        this.setState(prevState => ({
+            ...prevState,
+            name,
+        }));
+    }
+
     onPasswordChange(password) {
         this.setState(prevState => ({
             ...prevState,
+            passwordMismatch: false,
             password,
+        }));
+    }
+
+    onConfirmedPasswordChange(confirmedPassword) {
+        this.setState(prevState => ({
+            ...prevState,
+            passwordMismatch: false,
+            confirmedPassword,
         }));
     }
 
@@ -50,6 +71,31 @@ class LoginScreen extends Component {
         const { username, password } = this.state;
 
         this.props.asyncLoginUser({ username, password }, this.props.history);
+    }
+
+    onSignUpSubmit() {
+        const {
+            username,
+            password,
+            confirmedPassword,
+            name,
+            owner,
+        } = this.state;
+
+        if (password !== confirmedPassword) {
+            this.setState(prevState => ({
+                ...prevState,
+                passwordMismatch: true,
+            }));
+        } else {
+            this.props.asyncSignUpUser({
+                username,
+                password,
+                name,
+                owner,
+                url: '',
+            }, this.props.history);
+        }
     }
 
     toggleSignup() {
@@ -62,7 +108,11 @@ class LoginScreen extends Component {
     render() {
         const {
             username,
+            name,
             password,
+            passwordMismatch,
+            confirmedPassword,
+            isSignUp,
         } = this.state;
 
         const { loggingIn, user } = this.props;
@@ -89,7 +139,7 @@ class LoginScreen extends Component {
                         size="small"
                         margin={{ bottom: 'large', top: 'large', left: 'small' }}
                     >
-                        Login
+                        {isSignUp ? 'Sign Up' : 'Login'}
                     </Heading>
                     <FormField
                         label="Username"
@@ -101,27 +151,49 @@ class LoginScreen extends Component {
                             id="username"
                             placeholder="Enter your username"
                             value={username}
-                            onChange={this.onUsernameChange}
+                            onChange={event => this.onUsernameChange(event.target.value)}
                             onSelect={this.onSelect}
                         />
                     </FormField>
+                    <CSSTransition
+                        in={isSignUp}
+                        timeout={300}
+                        classNames="confirm-password"
+                        mountOnEnter
+                        unmountOnExit
+                    >
+                        <FormField
+                            label="Name"
+                            htmlFor="name"
+                            margin={{ bottom: 'medium' }}
+                            {...this.props}
+                        >
+                            <TextInput
+                                id="name"
+                                placeholder="Enter your name"
+                                value={name}
+                                onChange={event => this.onNameChange(event.target.value)}
+                                onSelect={this.onSelect}
+                            />
+                        </FormField>
+                    </CSSTransition>
                     <FormField
                         label="Password"
                         htmlFor="password"
-                        margin={{ bottom: `${this.state.isSignUp ? 'medium' : 'large'}` }}
+                        margin={{ bottom: `${isSignUp ? 'medium' : 'large'}` }}
                         {...this.props}
                     >
                         <TextInput
                             id="password"
                             placeholder="Enter your password"
                             value={password}
-                            onChange={this.onPasswordChange}
+                            onChange={event => this.onPasswordChange(event.target.value)}
                             onSelect={this.onSelect}
                             type="password"
                         />
                     </FormField>
                     <CSSTransition
-                        in={this.state.isSignUp}
+                        in={isSignUp}
                         timeout={300}
                         classNames="confirm-password"
                         mountOnEnter
@@ -136,18 +208,38 @@ class LoginScreen extends Component {
                             <TextInput
                                 id="confirm-password"
                                 placeholder="Retype your password"
-                                value={password}
-                                onChange={this.onPasswordChange}
+                                value={confirmedPassword}
+                                onChange={event => (
+                                    this.onConfirmedPasswordChange(event.target.value)
+                                )}
                                 onSelect={this.onSelect}
                                 type="password"
                             />
                         </FormField>
                     </CSSTransition>
+                    <CSSTransition
+                        in={passwordMismatch}
+                        timeout={300}
+                        classNames="password-mismatch"
+                        mountOnEnter
+                        unmountOnExit
+                    >
+                        <Text
+                            size="xsmall"
+                            color="status-error"
+                            style={{
+                                marginTop: '-15px',
+                                marginBottom: '8px',
+                            }}
+                        >
+                            Oops, those password don&#39;t match
+                        </Text>
+                    </CSSTransition>
                     <Button
                         margin={{ bottom: 'small' }}
                         primary
                         type="submit"
-                        onClick={this.onLoginSubmit}
+                        onClick={isSignUp ? this.onSignUpSubmit : this.onLoginSubmit}
                     >
                         <Box
                             pad="medium"
@@ -164,7 +256,7 @@ class LoginScreen extends Component {
                                         <div />
                                     </div>
                                 ) : (
-                                    <Text>Login</Text>
+                                    <Text>{isSignUp ? 'Sign Up' : 'Login'}</Text>
                                 )
                             }
                         </Box>
@@ -200,6 +292,7 @@ LoginScreen.defaultProps = {
 
 LoginScreen.propTypes = {
     asyncLoginUser: PropTypes.func.isRequired,
+    asyncSignUpUser: PropTypes.func.isRequired,
     loggingIn: PropTypes.bool,
 };
 
@@ -208,4 +301,7 @@ const mapStateToProps = ({ login: { loggingIn, user } }) => ({
     user,
 });
 
-export default connect(mapStateToProps, { asyncLoginUser })(LoginScreen);
+export default connect(mapStateToProps, {
+    asyncLoginUser,
+    asyncSignUpUser,
+})(LoginScreen);

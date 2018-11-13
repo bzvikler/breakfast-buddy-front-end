@@ -4,11 +4,14 @@
  * $ npm install express && npm install socket.io
  * $ node mockApi.js
  */
+
+const bodParse = require('body-parser');
 const app = require('express')();
 const http = require('http').Server(app);
 const cors = require('cors');
 
 app.use(cors());
+app.use(bodParse());
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -30,12 +33,13 @@ app.get('/guest-home', (req, res) => {
     res.send({ id: '12345' });
 });
 
-app.post('/questions', (req, res) => {
-    console.log(req.body);
-    res.send({
-        q: req.body.question,
-        des: req.body.description,
-    });
+app.post('/signup', (req, res) => {
+    setTimeout(() => {
+        res.send({
+            id: '12345',
+            ...req.body,
+        });
+    }, 1000);
 });
 
 
