@@ -15,11 +15,18 @@ import {
     GoogleMap,
     Marker,
 } from 'react-google-maps';
+import Geocode from 'react-geocode';
+import config from '../../../config';
+import PulseLoader from '../../common/PulseLoader/PulseLoader';
+
+const { mapsApiKey } = config;
+
+Geocode.setApiKey(mapsApiKey);
+Geocode.enableDebug();
 
 const GoogleMapComponent = compose(
     withProps({
-        // TODO: switch to public key before deploying
-        googleMapURL: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyB3RY_BYDDHLS77R7Gr41oeFMne22Z9ypM&libraries=geometry,drawing,places',
+        googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${mapsApiKey}&libraries=geometry,drawing,places`,
         loadingElement: <div style={{ height: '100%' }} />,
         containerElement: <Box basis="full" />,
         mapElement: <div style={{ flex: '1' }} />,
@@ -75,18 +82,55 @@ class CenteredMarkerMap extends React.PureComponent {
             isMarkerShown: false,
             centerLat: null,
             centerLng: null,
-            defaultCenter: { lat: 49.261427, lng: -123.245934 },
+            failOverCoords: {
+                lat: 49.261427,
+                lng: -123.245934,
+            },
         };
 
         this.handleBoundsChange = this.handleBoundsChange.bind(this);
+        this.handleDragEnd = this.handleDragEnd.bind(this);
     }
 
     handleBoundsChange(mapCenter) {
+        const {
+            failOverCoords: {
+                lat,
+                lng,
+            },
+        } = this.state;
+
         this.setState(prevState => ({
             ...prevState,
-            centerLat: mapCenter.lat(),
-            centerLng: mapCenter.lng(),
+            centerLat: mapCenter ? mapCenter.lat() : lat,
+            centerLng: mapCenter ? mapCenter.lng() : lng,
         }));
+    }
+
+    handleDragEnd() {
+        const {
+            centerLat,
+            centerLng,
+        } = this.state;
+
+        this.props.onDragEnd({ lat: centerLat, lng: centerLng });
+
+        /* TODO: use this if we can't get geocoding working on server,
+                 must remove referrer restrctions on API key though
+        Geocode.fromLatLng(centerLat, centerLng)
+            .then(
+                (response) => {
+                    const address = response.results[0].formatted_address;
+
+                    this.props.onDragEnd({ lat: centerLat, lng: centerLng, address });
+                },
+                (error) => {
+                    console.error(error);
+
+                    this.props.onDragEnd({ lat: centerLat, lng: centerLng });
+                },
+            );
+        */
     }
 
     render() {
@@ -96,21 +140,44 @@ class CenteredMarkerMap extends React.PureComponent {
         } = this.state;
 
         return (
-            <GoogleMapComponent
-                defaultCenter={this.state.defaultCenter}
-                onMarkerClick={this.handleMarkerClick}
-                onBoundsChange={this.handleBoundsChange}
-                centerPos={{ lat: centerLat, lng: centerLng }}
-                onDragEnd={() => this.props.onDragEnd({ lat: centerLat, lng: centerLng })}
-                onDragStart={this.props.onDragStart}
-            />
+            this.props.ready ? (
+                <GoogleMapComponent
+                    defaultCenter={this.props.initialCoords}
+                    onMarkerClick={this.handleMarkerClick}
+                    onBoundsChange={this.handleBoundsChange}
+                    centerPos={{ lat: centerLat, lng: centerLng }}
+                    onDragEnd={this.handleDragEnd}
+                    onDragStart={this.props.onDragStart}
+                />
+            ) : (
+                <Box
+                    basis="full"
+                    justify="center"
+                    align="center"
+                    background={{ color: '#e9e9e9' }}
+                >
+                    <PulseLoader />
+                </Box>
+            )
         );
     }
 }
 
+CenteredMarkerMap.defaultProps = {
+    initialCoords: {
+        lat: 49.261427,
+        lng: -123.245934,
+    },
+};
+
 CenteredMarkerMap.propTypes = {
     onDragEnd: PropTypes.func.isRequired,
     onDragStart: PropTypes.func.isRequired,
+    initialCoords: PropTypes.shape({
+        lat: PropTypes.number,
+        lng: PropTypes.number,
+    }),
+    ready: PropTypes.bool.isRequired,
 };
 
 export default CenteredMarkerMap;

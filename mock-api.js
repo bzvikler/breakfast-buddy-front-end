@@ -42,6 +42,45 @@ app.post('/signup', (req, res) => {
     }, 1000);
 });
 
+app.post('/user/:id/search-restaurant', (req, res) => {
+    const mockResults = [
+        {
+            restaurantID: '1',
+            restaurantName: 'Loaf',
+            faveFood: 'Waffles',
+            closeTime: '23',
+        },
+        {
+            restaurantID: '2',
+            restaurantName: 'Jam Cafe',
+            faveFood: 'Pancakes',
+            closeTime: '23',
+        },
+        {
+            restaurantID: '3',
+            restaurantName: 'McDonalds',
+            faveFood: 'McGriddle',
+            closeTime: '23',
+        },
+        {
+            restaurantID: '4',
+            restaurantName: 'Tim Hortons',
+            faveFood: 'Breakfast Sandwich',
+            closeTime: '23',
+        },
+        {
+            restaurantID: '5',
+            restaurantName: 'Upper Case',
+            faveFood: 'Marbelous Cookie',
+            closeTime: '23',
+        },
+    ];
+
+    setTimeout(() => {
+        res.send(mockResults);
+    }, 1000);
+});
+
 
 http.listen(8080, () => {
     console.log('listening on port 8080');

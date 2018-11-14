@@ -12,6 +12,7 @@ import {
 } from 'grommet';
 
 import { asyncLoginUser, asyncSignUpUser } from '../../../store/Login/login-actions';
+import PulseLoader from '../../common/PulseLoader/PulseLoader';
 
 import './LoginScreen.css';
 
@@ -250,11 +251,7 @@ class LoginScreen extends Component {
                         >
                             {
                                 (user && loggingIn === true) ? (
-                                    <div className="la-ball-pulse">
-                                        <div />
-                                        <div />
-                                        <div />
-                                    </div>
+                                    <PulseLoader />
                                 ) : (
                                     <Text>{isSignUp ? 'Sign Up' : 'Login'}</Text>
                                 )

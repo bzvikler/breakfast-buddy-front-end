@@ -54,6 +54,18 @@ class AppAPI {
             axios.post(this.makeUrl('signup'), signUpDetails),
         );
     }
+
+    /**
+     * Initiates a new restaurant search for a given user
+     *
+     * @param { lat, lon, time, day } object search details
+     * @returns {AxiosPromise<any>} resolves to a user entity
+     */
+    searchRestaurants(userId, searchDetails) {
+        return AppAPI.unwrapData(
+            axios.post(this.makeUrl(`user/${userId}/search-restaurant`), searchDetails),
+        );
+    }
 }
 
 export default AppAPI;
