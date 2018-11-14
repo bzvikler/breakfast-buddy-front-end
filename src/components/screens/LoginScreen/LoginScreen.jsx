@@ -101,7 +101,7 @@ class LoginScreen extends Component {
     toggleSignup() {
         this.setState(prevState => ({
             ...prevState,
-            isSignUp: true,
+            isSignUp: !prevState.isSignUp,
         }));
     }
 

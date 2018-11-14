@@ -17,7 +17,7 @@ const linkStyle = {
     color: 'inherit',
 };
 
-const DropContent = ({ onClose }) => (
+const DropContent = () => (
     <Box pad="small">
         <Button>
             <Box direction="row" gap="medium" align="center" pad="small">
