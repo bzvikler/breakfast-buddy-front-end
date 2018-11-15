@@ -2,12 +2,14 @@ import {
     SEARCH_REQUEST,
     SEARCH_SUCCESS,
     SEARCH_FAILURE,
+    SET_ACTIVE_RESTAURANT,
 } from './search-types';
 
 const INITIAL_STATE = {
     gettingRestaurants: false,
     searchError: null,
     restaurantList: [],
+    activeRestaurant: null,
 };
 
 const SearchReducer = (state = INITIAL_STATE, { type, payload }) => {
@@ -28,6 +30,11 @@ const SearchReducer = (state = INITIAL_STATE, { type, payload }) => {
                 ...state,
                 restaurantList: payload,
                 gettingRestaurants: false,
+            };
+        case SET_ACTIVE_RESTAURANT:
+            return {
+                ...state,
+                activeRestaurant: payload,
             };
         default:
             return state;

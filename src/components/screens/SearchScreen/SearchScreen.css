@@ -1,0 +1,19 @@
+.expanded-restaurant-enter {
+    opacity: 0;
+}
+
+.expanded-restaurant-enter-active {
+    opacity: 1;
+    transition:
+        opacity 200ms ease-out;
+}
+
+.expanded-restaurant-exit {
+    opacity: 1;
+}
+
+.expanded-restaurant-exit-active {
+    opacity: 0;
+    transition:
+        opacity 200ms ease-out;
+}

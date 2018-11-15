@@ -32,6 +32,7 @@ class AppShell extends Component {
                 <Navbar user={user} isGuest={userIsGuest} />
                 <Switch>
                     <Route exact path="/" component={SearchScreen} />
+                    <Route exact path="/restaurant/:id" component={SearchScreen} />
                     <Route exact path="/login" component={LoginScreen} />
                 </Switch>
             </div>

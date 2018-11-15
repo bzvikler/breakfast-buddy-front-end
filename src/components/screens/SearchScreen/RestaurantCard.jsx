@@ -8,9 +8,13 @@ import {
 } from 'grommet';
 
 const RestaurantCard = ({
+    id,
     name,
     closeTime,
     faveFood,
+    onClick,
+    lat,
+    lng,
 }) => (
     <Box
         elevation="xsmall"
@@ -52,14 +56,19 @@ const RestaurantCard = ({
             label="See More"
             primary
             hoverIndicator={false}
+            onClick={() => onClick({ id, lat, lng })}
         />
     </Box>
 );
 
 RestaurantCard.propTypes = {
+    id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     closeTime: PropTypes.string.isRequired,
     faveFood: PropTypes.string.isRequired,
+    lat: PropTypes.number.isRequired,
+    lng: PropTypes.number.isRequired,
+    onClick: PropTypes.func.isRequired,
 };
 
 export default RestaurantCard;

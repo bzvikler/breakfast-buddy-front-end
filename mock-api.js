@@ -49,24 +49,32 @@ app.post('/user/:id/search-restaurant', (req, res) => {
             restaurantName: 'Loaf',
             faveFood: 'Waffles',
             closeTime: '1 PM',
+            lat: 49.265845,
+            lon: -123.250135,
         },
         {
             restaurantID: '2',
             restaurantName: 'Jam Cafe',
             faveFood: 'Pancakes',
             closeTime: '3 PM',
+            lat: 49.280297,
+            lon: -123.109663,
         },
         {
             restaurantID: '3',
             restaurantName: 'McDonalds',
             faveFood: 'McGriddle',
             closeTime: 'Never',
+            lat: 49.266682,
+            lon: -123.242516,
         },
         {
             restaurantID: '4',
             restaurantName: 'Upper Case',
             faveFood: 'Marbelous Cookie',
             closeTime: '6 PM',
+            lat: 49.266656,
+            lon: -123.249853,
         },
     ];
 

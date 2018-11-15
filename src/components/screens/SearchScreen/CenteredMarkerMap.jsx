@@ -148,6 +148,7 @@ class CenteredMarkerMap extends React.PureComponent {
                     centerPos={{ lat: centerLat, lng: centerLng }}
                     onDragEnd={this.handleDragEnd}
                     onDragStart={this.props.onDragStart}
+                    controlledCenter={this.props.controlledCenter}
                 />
             ) : (
                 <Box
