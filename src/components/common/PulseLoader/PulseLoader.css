@@ -15,6 +15,9 @@
      font-size: 0;
      color: #fff;
  }
+ .la-ball-pulse.brand {
+     color: #fed349;
+ }
  .la-ball-pulse.la-dark {
      color: #333;
  }

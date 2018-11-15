@@ -3,13 +3,13 @@ import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
 import {
     Box,
-    Heading,
 } from 'grommet';
 
 import { requestLocation } from '../../../store/Location/location-actions';
 import { asyncSearchForRestaurants } from '../../../store/Search/search-actions';
 import CenteredMarkerMap from './CenteredMarkerMap';
 import PulseLoader from '../../common/PulseLoader/PulseLoader';
+import RestaurantCard from './RestaurantCard';
 
 class SearchScreen extends Component {
     constructor(props) {
@@ -25,6 +25,18 @@ class SearchScreen extends Component {
 
     componentWillMount() {
         this.props.requestLocation();
+    }
+
+    componentDidUpdate(prevProps) {
+        const {
+            lat,
+            lng,
+            user,
+        } = this.props;
+
+        if (!prevProps.user && user) {
+            this.props.asyncSearchForRestaurants({ lat, lng });
+        }
     }
 
     toggleDrop() {
@@ -54,7 +66,7 @@ class SearchScreen extends Component {
             >
 
                 <Box
-                    basis="1/2"
+                    basis="2/3"
                 >
                     <CenteredMarkerMap
                         initialCoords={{ lat, lng }}
@@ -74,7 +86,7 @@ class SearchScreen extends Component {
                                 align="center"
                                 background={{ color: '#f7f7f7' }}
                             >
-                                <PulseLoader />
+                                <PulseLoader color="brand" />
                             </Box>
                         ) : (
                             <Box
@@ -83,21 +95,18 @@ class SearchScreen extends Component {
                                 overflow={{ horizontal: 'scroll' }}
                                 pad="medium"
                                 background={{ color: '#f7f7f7' }}
-                                style={{ whiteSpace: 'nowrap' }}
+                                style={{
+                                    WebkitOverflowScrolling: 'touch',
+                                }}
                             >
                                 {
                                     restaurantList.map(listItem => (
-                                        <Box>
-                                            <h1>hello this is long</h1>
-                                        </Box>
-                                        // <Box
-                                        //     // basis="1/3"
-                                        //     elevation="xsmall"
-                                        // >
-                                        //     <Heading>
-                                        //         {listItem.restaurantName}
-                                        //     </Heading>
-                                        // </Box>
+                                        <RestaurantCard
+                                            key={listItem.restaurantID}
+                                            name={listItem.restaurantName}
+                                            closeTime={listItem.closeTime}
+                                            faveFood={listItem.faveFood}
+                                        />
                                     ))
                                 }
                             </Box>
@@ -115,6 +124,7 @@ SearchScreen.defaultProps = {
     gettingLocation: null,
     gettingRestaurants: null,
     restaurantList: [],
+    user: null,
 };
 
 SearchScreen.propTypes = {
@@ -126,17 +136,20 @@ SearchScreen.propTypes = {
     gettingRestaurants: PropTypes.bool,
     restaurantList: PropTypes.arrayOf(PropTypes.shape({
     })),
+    user: PropTypes.shape({}),
 };
 
 const mapStateToProps = ({
     location: { lat, lng, gettingLocation },
     search: { gettingRestaurants, restaurantList },
+    login: { user },
 }) => ({
     lat,
     lng,
     gettingLocation,
     gettingRestaurants,
     restaurantList,
+    user,
 });
 
 export default connect(mapStateToProps, {

@@ -70,13 +70,20 @@ class Navbar extends Component {
                 style={{ zIndex: 1 }}
             >
                 <Box basis="full">
-                    <Link to="/" style={linkStyle}>
+                    <Link
+                        to="/"
+                        style={{
+                            ...linkStyle,
+                            display: 'inline-flex',
+                        }}
+                    >
                         <Heading
                             level={3}
                             margin="xsmall"
                             style={{ marginRight: 'auto' }}
+                            color="brand"
                         >
-                            Bb
+                            Breakfast buddy
                         </Heading>
                     </Link>
                 </Box>
@@ -105,9 +112,9 @@ class Navbar extends Component {
                                 dropAlign={{ top: 'bottom', right: 'right' }}
                                 padding="medium"
                             >
-                                <Box direction="row" gap="medium" align="center" pad="small">
+                                <Box direction="row" gap="small" align="center" pad="small">
                                     <Text truncate>
-                                        {`Welcome, ${user.name}`}
+                                        {user.name}
                                     </Text>
                                     <FormDown />
                                 </Box>
@@ -118,14 +125,6 @@ class Navbar extends Component {
         );
     }
 }
-
-DropContent.defaultProps = {
-    onClose: null,
-};
-
-DropContent.propTypes = {
-    onClose: PropTypes.func,
-};
 
 Navbar.defaultProps = {
     user: null,

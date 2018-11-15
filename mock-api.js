@@ -48,31 +48,25 @@ app.post('/user/:id/search-restaurant', (req, res) => {
             restaurantID: '1',
             restaurantName: 'Loaf',
             faveFood: 'Waffles',
-            closeTime: '23',
+            closeTime: '1 PM',
         },
         {
             restaurantID: '2',
             restaurantName: 'Jam Cafe',
             faveFood: 'Pancakes',
-            closeTime: '23',
+            closeTime: '3 PM',
         },
         {
             restaurantID: '3',
             restaurantName: 'McDonalds',
             faveFood: 'McGriddle',
-            closeTime: '23',
+            closeTime: 'Never',
         },
         {
             restaurantID: '4',
-            restaurantName: 'Tim Hortons',
-            faveFood: 'Breakfast Sandwich',
-            closeTime: '23',
-        },
-        {
-            restaurantID: '5',
             restaurantName: 'Upper Case',
             faveFood: 'Marbelous Cookie',
-            closeTime: '23',
+            closeTime: '6 PM',
         },
     ];
 
