@@ -1,8 +1,8 @@
 
 /* Mock api service for local testing
  * To run this script:
- * $ npm install express && npm install socket.io
- * $ node mockApi.js
+ * $ npm install express
+ * $ node mock-api.js
  */
 
 const bodParse = require('body-parser');
@@ -80,6 +80,34 @@ app.post('/user/:id/search-restaurant', (req, res) => {
 
     setTimeout(() => {
         res.send(mockResults);
+    }, 1000);
+});
+
+app.get('/view-restaurant/:id', (req, res) => {
+    const mockMap = {
+        1: {
+            restaurantID: '1',
+            restaurantName: 'Macs',
+            OpenHours: [{
+                day: 'Monday',
+                openTime: '00:00',
+                closeTime: '24:00',
+            }],
+            number: '293',
+            street: 'skj st',
+            city: 'ewfk',
+            postalCode: 'efqrf',
+            lat: 49.261427,
+            lon: -123.245934,
+            faveFood: '',
+            foodTypes: [{
+                food_type: 'pancakes',
+            }],
+        },
+    };
+
+    setTimeout(() => {
+        res.send(mockMap[req.params.id]);
     }, 1000);
 });
 

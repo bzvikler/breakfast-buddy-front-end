@@ -3,6 +3,7 @@ import {
     USER_LOGIN_SUCCESS,
     GUEST_LOGIN_SUCCESS,
     USER_LOGIN_FAILURE,
+    USER_LOG_OUT,
 } from './login-types';
 
 const loginRequest = () => ({ type: USER_LOGIN_REQUEST });
@@ -52,4 +53,9 @@ export const asyncSignUpUser = (userDetails, history) => async (dispatch, _, { A
 
         dispatch(loginFailure(error));
     }
+};
+
+export const logoutUser = () => async (dispatch) => {
+    dispatch({ type: USER_LOG_OUT });
+    dispatch(asyncLoginGuestUser());
 };

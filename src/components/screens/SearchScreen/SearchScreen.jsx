@@ -28,19 +28,12 @@ class SearchScreen extends Component {
 
         this.state = {
             dropOpen: false,
-            centerLat: null,
-            centerLng: null,
-            failOverCoords: {
-                lat: 49.261427,
-                lng: -123.245934,
-            },
         };
 
         this.toggleDrop = this.toggleDrop.bind(this);
         this.handleDragEnd = this.handleDragEnd.bind(this);
         this.handleCardClick = this.handleCardClick.bind(this);
         this.handleExpandedClose = this.handleExpandedClose.bind(this);
-        this.handleMapBoundsChange = this.handleMapBoundsChange.bind(this);
     }
 
     componentWillMount() {
@@ -56,14 +49,19 @@ class SearchScreen extends Component {
         this.props.requestLocation();
 
         if (id) {
-            this.props.setActiveRestaurant(id, history);
+            // TODO: change this to getExpandedRestaurant, which should get back lat lng too
+            this.props.setActiveRestaurant({
+                restaurantId: id,
+                restaurantLat: 49.261427,
+                restaurantLng: -123.245934,
+            }, history);
         }
     }
 
     componentDidUpdate(prevProps) {
         const {
-            lat,
-            lng,
+            userLat,
+            userLng,
             user,
             match: {
                 params: {
@@ -73,7 +71,7 @@ class SearchScreen extends Component {
         } = this.props;
 
         if (!prevProps.user && user && !id) {
-            this.props.asyncSearchForRestaurants({ lat, lng });
+            this.props.asyncSearchForRestaurants({ lat: userLat, lng: userLng });
         }
     }
 
@@ -85,60 +83,51 @@ class SearchScreen extends Component {
     }
 
     handleDragEnd(coords) {
-        this.props.setActiveRestaurant(null, this.props.history);
+        this.props.setActiveRestaurant({
+            restaurantId: null,
+            restaurantLat: null,
+            restaurantLng: null,
+        }, this.props.history);
+
         this.props.asyncSearchForRestaurants(coords);
     }
 
     handleExpandedClose() {
         const {
             restaurantList,
-            lat,
-            lng,
+            userLat,
+            userLng,
         } = this.props;
 
-        this.props.setActiveRestaurant(null, this.props.history);
+        this.props.setActiveRestaurant({
+            restaurantId: null,
+            restaurantLat: null,
+            restaurantLng: null,
+        }, this.props.history);
 
         if (!restaurantList.length) {
-            this.props.asyncSearchForRestaurants({ lat, lng });
+            this.props.asyncSearchForRestaurants({ lat: userLat, lng: userLng });
         }
     }
 
     handleCardClick({ id, lat, lng }) {
-        console.log('card clicked with: ', lat, lng);
-
-        this.setState(prevState => ({
-            ...prevState,
-            test: !prevState.test,
-            lat,
-            lng,
-        }));
-
-        this.props.setActiveRestaurant(id, this.props.history);
-    }
-
-    handleMapBoundsChange(mapCenter) {
-        const {
-            failOverCoords: {
-                lat,
-                lng,
-            },
-        } = this.state;
-
-        this.setState(prevState => ({
-            ...prevState,
-            centerLat: mapCenter ? mapCenter.lat() : lat,
-            centerLng: mapCenter ? mapCenter.lng() : lng,
-        }));
+        this.props.setActiveRestaurant({
+            restaurantId: id,
+            restaurantLat: lat,
+            restaurantLng: lng,
+        }, this.props.history);
     }
 
     render() {
         const {
-            lat,
-            lng,
+            userLat,
+            userLng,
             gettingLocation,
             gettingRestaurants,
             restaurantList,
             activeRestaurant,
+            activeRestaurantLat,
+            activeRestaurantLng,
             match: {
                 params: {
                     id,
@@ -157,12 +146,11 @@ class SearchScreen extends Component {
                     style={basisTransition}
                 >
                     <CenteredMarkerMap
-                        initialCoords={{ lat, lng }}
+                        initialCoords={{ lat: userLat, lng: userLng }}
                         onDragStart={() => {}}
                         onDragEnd={this.handleDragEnd}
                         ready={gettingLocation === false}
-                        center={{ lat, lng }}
-                        controlledCenter={{}}
+                        controlledCenter={{ lat: activeRestaurantLat, lng: activeRestaurantLng }}
                     />
                 </Box>
                 <Box
@@ -212,7 +200,10 @@ class SearchScreen extends Component {
                                     mountOnEnter
                                     unmountOnExit
                                 >
-                                    <ExpandedRestaurant onClose={this.handleExpandedClose} />
+                                    <ExpandedRestaurant
+                                        onClose={this.handleExpandedClose}
+                                        id={id}
+                                    />
                                 </CSSTransition>
                             </Box>
                         )
@@ -224,19 +215,21 @@ class SearchScreen extends Component {
 }
 
 SearchScreen.defaultProps = {
-    lat: null,
-    lng: null,
+    userLat: null,
+    userLng: null,
     gettingLocation: null,
     gettingRestaurants: null,
     restaurantList: [],
     user: null,
     activeRestaurant: null,
+    activeRestaurantLat: null,
+    activeRestaurantLng: null,
 };
 
 SearchScreen.propTypes = {
     requestLocation: PropTypes.func.isRequired,
-    lat: PropTypes.number,
-    lng: PropTypes.number,
+    userLat: PropTypes.number,
+    userLng: PropTypes.number,
     gettingLocation: PropTypes.bool,
     asyncSearchForRestaurants: PropTypes.func.isRequired,
     gettingRestaurants: PropTypes.bool,
@@ -251,6 +244,8 @@ SearchScreen.propTypes = {
     user: PropTypes.shape({}),
     setActiveRestaurant: PropTypes.func.isRequired,
     activeRestaurant: PropTypes.string,
+    activeRestaurantLat: PropTypes.number,
+    activeRestaurantLng: PropTypes.number,
     match: PropTypes.shape({
         params: PropTypes.shape({
             id: PropTypes.string,
@@ -263,16 +258,24 @@ SearchScreen.propTypes = {
 
 const mapStateToProps = ({
     location: { lat, lng, gettingLocation },
-    search: { gettingRestaurants, restaurantList, activeRestaurant },
+    search: {
+        gettingRestaurants,
+        restaurantList,
+        activeRestaurant,
+        activeRestaurantLat,
+        activeRestaurantLng,
+    },
     login: { user },
 }) => ({
-    lat,
-    lng,
+    userLat: lat,
+    userLng: lng,
     gettingLocation,
     gettingRestaurants,
     restaurantList,
     user,
     activeRestaurant,
+    activeRestaurantLat,
+    activeRestaurantLng,
 });
 
 export default connect(mapStateToProps, {

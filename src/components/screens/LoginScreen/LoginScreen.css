@@ -49,3 +49,29 @@
         transform 200ms ease-out,
         opacity 200ms ease-out;
 }
+
+.restaurant-owner-enter {
+    opacity: 0;
+    height: 0;
+}
+
+.restaurant-owner-enter-active {
+    height: 24px;
+    opacity: 1;
+    transition:
+        height 200ms ease-out,
+        opacity 200ms ease-out;
+}
+
+.restaurant-owner-exit {
+    height: 24px;
+    opacity: 1;
+}
+
+.restaurant-owner-exit-active {
+    height: 0;
+    opacity: 0;
+    transition:
+        transform 200ms ease-out,
+        opacity 200ms ease-out;
+}

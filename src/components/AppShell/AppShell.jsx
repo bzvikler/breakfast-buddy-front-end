@@ -8,7 +8,10 @@ import {
     withRouter,
 } from 'react-router-dom';
 
-import { asyncLoginGuestUser } from '../../store/Login/login-actions';
+import {
+    asyncLoginGuestUser,
+    logoutUser,
+} from '../../store/Login/login-actions';
 import Navbar from './Navbar/NavBar';
 
 import SearchScreen from '../screens/SearchScreen/SearchScreen';
@@ -17,8 +20,18 @@ import LoginScreen from '../screens/LoginScreen/LoginScreen';
 import './AppShell.css';
 
 class AppShell extends Component {
+    constructor(props) {
+        super(props);
+
+        this.onLogoutClick = this.onLogoutClick.bind(this);
+    }
+
     componentDidMount() {
         this.props.asyncLoginGuestUser();
+    }
+
+    onLogoutClick() {
+        this.props.logoutUser();
     }
 
     render() {
@@ -29,7 +42,11 @@ class AppShell extends Component {
 
         return (
             <div className="app-shell">
-                <Navbar user={user} isGuest={userIsGuest} />
+                <Navbar
+                    user={user}
+                    isGuest={userIsGuest}
+                    onLogoutClick={this.onLogoutClick}
+                />
                 <Switch>
                     <Route exact path="/" component={SearchScreen} />
                     <Route exact path="/restaurant/:id" component={SearchScreen} />
@@ -42,12 +59,14 @@ class AppShell extends Component {
 
 AppShell.defaultProps = {
     asyncLoginGuestUser: null,
+    logoutUser: null,
     user: null,
     userIsGuest: true,
 };
 
 AppShell.propTypes = {
     asyncLoginGuestUser: PropTypes.func,
+    logoutUser: PropTypes.func,
     user: PropTypes.shape({
         id: PropTypes.string,
     }),
@@ -63,5 +82,6 @@ export default compose(
     withRouter,
     connect(mapStateToProps, {
         asyncLoginGuestUser,
+        logoutUser,
     }),
 )(AppShell);

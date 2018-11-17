@@ -20,7 +20,12 @@ export const asyncSearchForRestaurants = coords => async (dispatch, getState, { 
             },
         } = getState();
 
-        const restaurantList = await AppApi.searchRestaurants(id, coords);
+        // TODO: add time and day tracking
+        const restaurantList = await AppApi.searchRestaurants(id, {
+            ...coords,
+            time: '00:00',
+            day: 'Monday',
+        });
 
         dispatch(searchSuccess(restaurantList));
     } catch (error) {
@@ -30,10 +35,18 @@ export const asyncSearchForRestaurants = coords => async (dispatch, getState, { 
     }
 };
 
-export const setActiveRestaurant = (restaurantId, history) => (dispatch) => {
+export const setActiveRestaurant = ({
+    restaurantId,
+    restaurantLat,
+    restaurantLng,
+}, history) => (dispatch) => {
     dispatch({
         type: SET_ACTIVE_RESTAURANT,
-        payload: restaurantId,
+        payload: {
+            restaurantId,
+            restaurantLat,
+            restaurantLng,
+        },
     });
 
     if (restaurantId) {

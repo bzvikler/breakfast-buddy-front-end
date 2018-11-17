@@ -9,6 +9,7 @@ import {
     TextInput,
     Button,
     Text,
+    CheckBox,
 } from 'grommet';
 
 import { asyncLoginUser, asyncSignUpUser } from '../../../store/Login/login-actions';
@@ -27,6 +28,7 @@ class LoginScreen extends Component {
             confirmedPassword: '',
             passwordMismatch: false,
             isSignUp: false,
+            owner: false,
         };
 
         this.onUsernameChange = this.onUsernameChange.bind(this);
@@ -36,6 +38,7 @@ class LoginScreen extends Component {
         this.onLoginSubmit = this.onLoginSubmit.bind(this);
         this.onSignUpSubmit = this.onSignUpSubmit.bind(this);
         this.toggleSignup = this.toggleSignup.bind(this);
+        this.toggleOwner = this.toggleOwner.bind(this);
     }
 
     onUsernameChange(username) {
@@ -106,6 +109,13 @@ class LoginScreen extends Component {
         }));
     }
 
+    toggleOwner() {
+        this.setState(prevState => ({
+            ...prevState,
+            owner: !prevState.owner,
+        }));
+    }
+
     render() {
         const {
             username,
@@ -114,6 +124,7 @@ class LoginScreen extends Component {
             passwordMismatch,
             confirmedPassword,
             isSignUp,
+            owner,
         } = this.state;
 
         const { loggingIn, user } = this.props;
@@ -217,6 +228,21 @@ class LoginScreen extends Component {
                                 type="password"
                             />
                         </FormField>
+                    </CSSTransition>
+                    <CSSTransition
+                        in={isSignUp}
+                        timeout={300}
+                        classNames="restaurant-owner"
+                        mountOnEnter
+                        unmountOnExit
+                    >
+                        <Box margin={{ bottom: 'large' }}>
+                            <CheckBox
+                                label="I&#39;m a restaurant owner"
+                                checked={owner}
+                                onChange={this.toggleOwner}
+                            />
+                        </Box>
                     </CSSTransition>
                     <CSSTransition
                         in={passwordMismatch}

@@ -10,6 +10,8 @@ const INITIAL_STATE = {
     searchError: null,
     restaurantList: [],
     activeRestaurant: null,
+    activeRestaurantLat: null,
+    activeRestaurantLng: null,
 };
 
 const SearchReducer = (state = INITIAL_STATE, { type, payload }) => {
@@ -31,11 +33,20 @@ const SearchReducer = (state = INITIAL_STATE, { type, payload }) => {
                 restaurantList: payload,
                 gettingRestaurants: false,
             };
-        case SET_ACTIVE_RESTAURANT:
+        case SET_ACTIVE_RESTAURANT: {
+            const {
+                restaurantId,
+                restaurantLat,
+                restaurantLng,
+            } = payload;
+
             return {
                 ...state,
-                activeRestaurant: payload,
+                activeRestaurant: restaurantId,
+                activeRestaurantLat: restaurantLat,
+                activeRestaurantLng: restaurantLng,
             };
+        }
         default:
             return state;
     }

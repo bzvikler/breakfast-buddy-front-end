@@ -17,16 +17,24 @@ const linkStyle = {
     color: 'inherit',
 };
 
-const DropContent = () => (
+const DropContent = ({ onClose, onLogoutClick }) => (
     <Box pad="small">
-        <Button>
-            <Box direction="row" gap="medium" align="center" pad="small">
-                <Text>
-                    My Account
-                </Text>
-            </Box>
-        </Button>
-        <Button>
+        <Link
+            to="/account"
+            style={{
+                ...linkStyle,
+                display: 'inline-flex',
+            }}
+        >
+            <Button onClick={onClose}>
+                <Box direction="row" gap="medium" align="center" pad="small">
+                    <Text>
+                        My Account
+                    </Text>
+                </Box>
+            </Button>
+        </Link>
+        <Button onClick={onLogoutClick}>
             <Box direction="row" gap="medium" align="center" pad="small">
                 <Text>
                     Logout
@@ -45,6 +53,13 @@ class Navbar extends Component {
         };
 
         this.toggleDrop = this.toggleDrop.bind(this);
+        this.onLogoutClick = this.onLogoutClick.bind(this);
+    }
+
+    onLogoutClick() {
+        this.toggleDrop();
+
+        this.props.onLogoutClick();
     }
 
     toggleDrop() {
@@ -107,7 +122,12 @@ class Navbar extends Component {
                             <DropButton
                                 open={this.state.dropOpen}
                                 onClose={this.toggleDrop}
-                                dropContent={<DropContent onClose={this.toggleDrop} />}
+                                dropContent={(
+                                    <DropContent
+                                        onClose={this.toggleDrop}
+                                        onLogoutClick={this.onLogoutClick}
+                                    />
+                                )}
                                 onClick={this.toggleDrop}
                                 dropAlign={{ top: 'bottom', right: 'right' }}
                                 padding="medium"
@@ -126,9 +146,15 @@ class Navbar extends Component {
     }
 }
 
+DropContent.propTypes = {
+    onClose: PropTypes.func.isRequired,
+    onLogoutClick: PropTypes.func.isRequired,
+};
+
 Navbar.defaultProps = {
     user: null,
     isGuest: true,
+    onLogoutClick: null,
 };
 
 Navbar.propTypes = {
@@ -137,6 +163,7 @@ Navbar.propTypes = {
         name: PropTypes.string,
     }),
     isGuest: PropTypes.bool,
+    onLogoutClick: PropTypes.func,
 };
 
 export default Navbar;

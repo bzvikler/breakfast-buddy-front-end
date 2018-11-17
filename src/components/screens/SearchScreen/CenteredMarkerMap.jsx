@@ -24,6 +24,18 @@ const { mapsApiKey } = config;
 Geocode.setApiKey(mapsApiKey);
 Geocode.enableDebug();
 
+const calculateMapCenter = (controlledCenter, userCenter, draggedCenter) => {
+    if (controlledCenter.lat) {
+        return controlledCenter;
+    }
+
+    if (draggedCenter.lat) {
+        return draggedCenter;
+    }
+
+    return userCenter;
+};
+
 const GoogleMapComponent = compose(
     withProps({
         googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${mapsApiKey}&libraries=geometry,drawing,places`,
@@ -50,24 +62,27 @@ const GoogleMapComponent = compose(
     withGoogleMap,
 )(props => (
     <GoogleMap
-        defaultZoom={12}
+
         defaultCenter={props.defaultCenter}
         defaultOptions={{
             fullscreenControl: false,
             zoomControl: false,
             streetViewControl: false,
             mapTypeControl: false,
+            draggable: props.draggable,
         }}
         ref={props.onMapMounted}
         onBoundsChanged={props.onBoundsChanged}
         onDragEnd={props.onDragEnd}
         onDragStart={props.onDragStart}
+        {...props}
+        zoom={12}
     >
         {
             <Marker
-                position={(
-                    props.centerPos.lat ? props.centerPos : props.defaultCenter
-                )}
+                position={
+                    calculateMapCenter(props.controlledCenter, props.defaultCenter, props.centerPos)
+                }
                 onClick={props.onMarkerClick}
             />
         }
@@ -114,23 +129,6 @@ class CenteredMarkerMap extends React.PureComponent {
         } = this.state;
 
         this.props.onDragEnd({ lat: centerLat, lng: centerLng });
-
-        /* TODO: use this if we can't get geocoding working on server,
-                 must remove referrer restrctions on API key though
-        Geocode.fromLatLng(centerLat, centerLng)
-            .then(
-                (response) => {
-                    const address = response.results[0].formatted_address;
-
-                    this.props.onDragEnd({ lat: centerLat, lng: centerLng, address });
-                },
-                (error) => {
-                    console.error(error);
-
-                    this.props.onDragEnd({ lat: centerLat, lng: centerLng });
-                },
-            );
-        */
     }
 
     render() {
@@ -138,6 +136,10 @@ class CenteredMarkerMap extends React.PureComponent {
             centerLat,
             centerLng,
         } = this.state;
+
+        const centerProp = this.props.controlledCenter.lat ? {
+            center: this.props.controlledCenter,
+        } : {};
 
         return (
             this.props.ready ? (
@@ -149,6 +151,8 @@ class CenteredMarkerMap extends React.PureComponent {
                     onDragEnd={this.handleDragEnd}
                     onDragStart={this.props.onDragStart}
                     controlledCenter={this.props.controlledCenter}
+                    draggable={this.props.draggable}
+                    {...centerProp}
                 />
             ) : (
                 <Box
@@ -169,6 +173,11 @@ CenteredMarkerMap.defaultProps = {
         lat: 49.261427,
         lng: -123.245934,
     },
+    controlledCenter: {
+        lat: null,
+        lng: null,
+    },
+    draggable: true,
 };
 
 CenteredMarkerMap.propTypes = {
@@ -178,7 +187,12 @@ CenteredMarkerMap.propTypes = {
         lat: PropTypes.number,
         lng: PropTypes.number,
     }),
+    controlledCenter: PropTypes.shape({
+        lat: PropTypes.number,
+        lng: PropTypes.number,
+    }),
     ready: PropTypes.bool.isRequired,
+    draggable: PropTypes.bool,
 };
 
 export default CenteredMarkerMap;

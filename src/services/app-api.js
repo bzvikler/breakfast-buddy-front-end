@@ -66,6 +66,18 @@ class AppAPI {
             axios.post(this.makeUrl(`user/${userId}/search-restaurant`), searchDetails),
         );
     }
+
+    /**
+     * Gets a previously signed up user
+     *
+     * @param { username, password } object user details
+     * @returns {AxiosPromise<any>} resolves to a user entity
+     */
+    getExpandedRestaurant(restaurantId) {
+        return AppAPI.unwrapData(
+            axios.get(this.makeUrl(`view-restaurant/${restaurantId}`)),
+        );
+    }
 }
 
 export default AppAPI;

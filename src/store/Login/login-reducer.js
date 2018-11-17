@@ -3,6 +3,7 @@ import {
     USER_LOGIN_SUCCESS,
     GUEST_LOGIN_SUCCESS,
     USER_LOGIN_FAILURE,
+    USER_LOG_OUT,
 } from './login-types';
 
 const INITIAL_STATE = {
@@ -37,6 +38,12 @@ const LoginReducer = (state = INITIAL_STATE, { type, payload }) => {
                 ...state,
                 user: payload,
                 loggingIn: false,
+            };
+        case USER_LOG_OUT:
+            return {
+                ...state,
+                user: null,
+                userIsGuest: true,
             };
         default:
             return state;
