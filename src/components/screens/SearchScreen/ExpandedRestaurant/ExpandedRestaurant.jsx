@@ -26,6 +26,7 @@ class ExpandedRestaurant extends Component {
 
         this.handleLikeRestaurant = this.handleLikeRestaurant.bind(this);
         this.handleFavouriteFood = this.handleFavouriteFood.bind(this);
+        this.canInteract = this.canInteract.bind(this);
     }
 
     componentDidMount() {
@@ -38,7 +39,7 @@ class ExpandedRestaurant extends Component {
 
     isRestaurantLiked() {
         return this.props.user.likedRestaurants
-            .find(restaurant => restaurant.rid === this.props.id);
+            .find(restaurant => restaurant.rid.trim() === this.props.id.trim());
     }
 
     handleFavouriteFood(foodType) {
@@ -48,6 +49,23 @@ class ExpandedRestaurant extends Component {
         });
     }
 
+    canInteract() {
+        const {
+            user,
+            userIsGuest,
+        } = this.props;
+
+        if (userIsGuest) {
+            return false;
+        }
+
+        if (user) {
+            return !user.owner;
+        }
+
+        return false;
+    }
+
     isFoodFavourited(foodType) {
         const {
             user,
@@ -55,14 +73,15 @@ class ExpandedRestaurant extends Component {
         } = this.props;
 
         return user.favouritedFoods
-            .find(food => food.restaurantId === id && food.food_type === foodType);
+            .find(food => (
+                food.restaurantId.trim() === id.trim() && food.food_type.trim() === foodType.trim()
+            ));
     }
 
     render() {
         const {
             onClose,
             restaurantDetails,
-            userIsGuest,
         } = this.props;
 
         return (
@@ -93,7 +112,7 @@ class ExpandedRestaurant extends Component {
                                     onClick={onClose}
                                 />
                                 <Box>
-                                    <Heading margin={{ bottom: 'xsmall' }}>{restaurantDetails.restaurantName}</Heading>
+                                    <Heading margin={{ bottom: 'xsmall' }}>{restaurantDetails.RestaurantName}</Heading>
                                     <Text
                                         size="small"
                                         margin={{ bottom: 'medium' }}
@@ -104,7 +123,7 @@ class ExpandedRestaurant extends Component {
                                     </Text>
                                 </Box>
                                 {
-                                    !userIsGuest && (
+                                    this.canInteract() && (
                                         <Button
                                             icon={(
                                                 <Favorite
@@ -167,7 +186,7 @@ class ExpandedRestaurant extends Component {
                                                         {food.food_type}
                                                     </Text>
                                                     {
-                                                        !userIsGuest && (
+                                                        this.canInteract() && (
                                                             <Button
                                                                 size="small"
                                                                 icon={(
@@ -240,7 +259,7 @@ ExpandedRestaurant.propTypes = {
         favouritedFoods: PropTypes.arrayOf(PropTypes.shape({})),
     }),
     restaurantDetails: PropTypes.shape({
-        restaurantName: PropTypes.string,
+        RestaurantName: PropTypes.string,
         OpenHours: PropTypes.arrayOf(PropTypes.shape({
             day: PropTypes.string,
             openTime: PropTypes.string,

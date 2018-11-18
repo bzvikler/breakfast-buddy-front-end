@@ -78,7 +78,8 @@ class SearchScreen extends Component {
             },
         } = this.props;
 
-        if (!prevProps.user && user && !id) {
+        if ((!prevProps.user && user && !id) ||
+            (!prevProps.userLat && !prevProps.userLng && userLat && userLng)) {
             this.props.asyncSearchForRestaurants({ lat: userLat, lng: userLng });
         }
     }
@@ -210,7 +211,7 @@ class SearchScreen extends Component {
                                 >
                                     <ExpandedRestaurant
                                         onClose={this.handleExpandedClose}
-                                        id={id}
+                                        id={id ? id.trim() : ''}
                                     />
                                 </CSSTransition>
                             </Box>

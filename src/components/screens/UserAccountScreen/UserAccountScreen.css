@@ -1,0 +1,37 @@
+.toggle-text-input {
+    text-align: center;
+    display: flex;
+}
+
+.toggle-text-input::placeholder {
+    color: black;
+    font-family: 'Comfortaa', Arial, sans-serif;
+    font-weight: 600;
+    margin-left: 24px;
+}
+
+.edit-field-enter {
+    opacity: 0;
+    height: 0;
+}
+
+.edit-field-enter-active {
+    height: 75px;
+    opacity: 1;
+    transition:
+        height 200ms ease-out,
+        opacity 200ms ease-out;
+}
+
+.edit-field-exit {
+    height: 75px;
+    opacity: 1;
+}
+
+.edit-field-exit-active {
+    height: 0;
+    opacity: 0;
+    transition:
+        height 200ms ease-out,
+        opacity 200ms ease-out;
+}

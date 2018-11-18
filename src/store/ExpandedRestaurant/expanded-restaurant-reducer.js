@@ -30,7 +30,7 @@ const ExpandedRestaurantReducer = (state = INITIAL_STATE, { type, payload }) => 
                 ...state,
                 restaurantCache: {
                     ...state.restaurantCache,
-                    [payload.restaurantID]: payload,
+                    [payload.restaurantID.trim()]: payload,
                 },
                 gettingExpandedRestaurant: false,
             };

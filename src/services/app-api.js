@@ -132,6 +132,31 @@ class AppAPI {
             axios.delete(this.makeUrl(`user/${userId}/restaurant/${restaurantId}/remove-fave-food/${foodType}`)),
         );
     }
+
+    /**
+     * Gets a profile
+     *
+     * @param userId string id
+     * @returns {AxiosPromise<any>} resolves to a user profile entity
+     */
+    getProfile(userId) {
+        return AppAPI.unwrapData(
+            axios.get(this.makeUrl(`user-profile/${userId}`)),
+        );
+    }
+
+    /**
+     * Posts a new profile with edits
+     *
+     * @param userId string id
+    * @param { username, password, name, img, } object user profile details
+     * @returns {AxiosPromise<any>} resolves to a user profile entity
+     */
+    editProfile(userId, profile) {
+        return AppAPI.unwrapData(
+            axios.post(this.makeUrl(`user-profile/${userId}/edit`), profile),
+        );
+    }
 }
 
 export default AppAPI;

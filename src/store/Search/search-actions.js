@@ -20,11 +20,20 @@ export const asyncSearchForRestaurants = coords => async (dispatch, getState, { 
             },
         } = getState();
 
-        // TODO: add time and day tracking
+        const days = [
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+        ];
+
         const restaurantList = await AppApi.searchRestaurants(id, {
             ...coords,
-            time: '00:00',
-            day: 'Monday',
+            time: new Date().toTimeString(),
+            day: days[new Date().getDay()],
         });
 
         dispatch(searchSuccess(restaurantList));

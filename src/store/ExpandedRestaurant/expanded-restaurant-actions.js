@@ -48,9 +48,9 @@ export const asyncFavouriteRestaurant = restaurantId => async (dispatch, getStat
         } = getState();
 
         const favouriteRestaurants =
-            likedRestaurants.find(restaurant => restaurant.rid === restaurantId) ?
-                await AppApi.deleteRestaurantFavourite(restaurantId, id) :
-                await AppApi.favouriteRestaurant(restaurantId, id);
+            likedRestaurants.find(restaurant => restaurant.rid.trim() === restaurantId.trim()) ?
+                await AppApi.deleteRestaurantFavourite(restaurantId.trim(), id.trim()) :
+                await AppApi.favouriteRestaurant(restaurantId.trim(), id.trim());
 
         dispatch({ type: FAVOURITE_RESTAURANT_SUCCESS, payload: favouriteRestaurants });
     } catch (error) {
@@ -76,7 +76,8 @@ export const asyncFavouriteFood = ({ type, restaurantId }) => (
 
             const favouriteFoods =
                 favouritedFoods.find(food => (
-                    food.restaurantId === restaurantId && food.food_type === type
+                    food.restaurantId.trim() === restaurantId.trim() &&
+                    food.food_type.trim() === type.trim()
                 )) ?
                     await AppApi.deleteFoodFavourite(restaurantId, id, type) :
                     await AppApi.favouriteFood(restaurantId, id, type);

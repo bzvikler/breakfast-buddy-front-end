@@ -17,7 +17,7 @@ export const asyncLoginGuestUser = () => async (dispatch, _, { AppApi }) => {
     try {
         const guestUser = await AppApi.loginGuest();
 
-        dispatch(guestLoginSuccess(guestUser));
+        dispatch(guestLoginSuccess({ id: guestUser }));
     } catch (error) {
         console.log('user login failed: ', error);
 
