@@ -6,6 +6,11 @@ import {
     USER_LOG_OUT,
 } from './login-types';
 
+import {
+    FAVOURITE_RESTAURANT_SUCCESS,
+    FAVOURITE_FOOD_SUCCESS,
+} from '../ExpandedRestaurant/expanded-restaurant-types';
+
 const INITIAL_STATE = {
     user: null,
     userIsGuest: true,
@@ -44,6 +49,22 @@ const LoginReducer = (state = INITIAL_STATE, { type, payload }) => {
                 ...state,
                 user: null,
                 userIsGuest: true,
+            };
+        case FAVOURITE_RESTAURANT_SUCCESS:
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    likedRestaurants: payload,
+                },
+            };
+        case FAVOURITE_FOOD_SUCCESS:
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    favouritedFoods: payload,
+                },
             };
         default:
             return state;

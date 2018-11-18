@@ -14,7 +14,7 @@ import {
 import CenteredMarkerMap from './CenteredMarkerMap';
 import PulseLoader from '../../common/PulseLoader/PulseLoader';
 import RestaurantCard from './RestaurantCard';
-import ExpandedRestaurant from './ExpandedRestaurant';
+import ExpandedRestaurant from './ExpandedRestaurant/ExpandedRestaurant';
 
 import './SearchScreen.css';
 
@@ -51,9 +51,17 @@ class SearchScreen extends Component {
         if (id) {
             // TODO: change this to getExpandedRestaurant, which should get back lat lng too
             this.props.setActiveRestaurant({
-                restaurantId: id,
+                restaurantId: id.toString(),
                 restaurantLat: 49.261427,
                 restaurantLng: -123.245934,
+            }, history);
+        }
+
+        if (!id) {
+            this.props.setActiveRestaurant({
+                restaurantId: null,
+                restaurantLat: null,
+                restaurantLng: null,
             }, history);
         }
     }

@@ -25,6 +25,19 @@ app.get('/home', (req, res) => {
             id: '12345',
             name: 'Rojin',
             owner: false,
+            likedRestaurants: [
+                {
+                    rid: '1',
+                    name: 'Macs',
+                },
+            ],
+            favouritedFoods: [
+                {
+                    restaurantId: '1',
+                    restaurantName: 'Macs',
+                    food_type: 'pancakes',
+                },
+            ],
         });
     }, 1000);
 });
@@ -88,26 +101,104 @@ app.get('/view-restaurant/:id', (req, res) => {
         1: {
             restaurantID: '1',
             restaurantName: 'Macs',
-            OpenHours: [{
-                day: 'Monday',
-                openTime: '00:00',
-                closeTime: '24:00',
-            }],
-            number: '293',
-            street: 'skj st',
-            city: 'ewfk',
-            postalCode: 'efqrf',
+            OpenHours: [
+                {
+                    day: 'Monday',
+                    openTime: '00:00',
+                    closeTime: '24:00',
+                },
+                {
+                    day: 'Tuesday',
+                    openTime: '00:00',
+                    closeTime: '24:00',
+                },
+                {
+                    day: 'Wednesday',
+                    openTime: '00:00',
+                    closeTime: '24:00',
+                },
+                {
+                    day: 'Thursday',
+                    openTime: '00:00',
+                    closeTime: '24:00',
+                },
+                {
+                    day: 'Friday',
+                    openTime: '00:00',
+                    closeTime: '24:00',
+                },
+                {
+                    day: 'Saturday',
+                    openTime: '00:00',
+                    closeTime: '24:00',
+                },
+                {
+                    day: 'Sunday',
+                    openTime: '00:00',
+                    closeTime: '24:00',
+                },
+            ],
+            number: '1757',
+            street: '128th St.',
+            city: 'Surrey',
+            postalCode: 'V4B 3V8',
             lat: 49.261427,
             lon: -123.245934,
-            faveFood: '',
-            foodTypes: [{
-                food_type: 'pancakes',
-            }],
+            faveFood: 'Waffles',
+            foodTypes: [
+                {
+                    food_type: 'pancakes',
+                },
+                {
+                    food_type: 'waffles',
+                },
+                {
+                    food_type: 'breakfast sandwiches',
+                },
+                {
+                    food_type: 'smoothies',
+                },
+            ],
         },
     };
 
     setTimeout(() => {
         res.send(mockMap[req.params.id]);
+    }, 1000);
+});
+
+app.post('/user/:userId/like-restaurant/:restaurantId', (req, res) => {
+    setTimeout(() => {
+        res.send([
+            {
+                rid: '1',
+                name: 'Macs',
+            },
+        ]);
+    }, 1000);
+});
+
+app.delete('/user/:userId/remove-liked-restaurant/:restaurantId', (req, res) => {
+    setTimeout(() => {
+        res.send([]);
+    }, 1000);
+});
+
+app.post('/user/:userId/like-food/:restaurantId', (req, res) => {
+    setTimeout(() => {
+        res.send([
+            {
+                restaurantId: req.params.restaurantId,
+                restaurantName: 'Macs',
+                food_type: req.body.food_type,
+            },
+        ]);
+    }, 1000);
+});
+
+app.delete('/user/:userId/restaurant/:restaurantId/remove-fave-food/:foodType', (req, res) => {
+    setTimeout(() => {
+        res.send([]);
     }, 1000);
 });
 

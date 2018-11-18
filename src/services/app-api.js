@@ -70,12 +70,66 @@ class AppAPI {
     /**
      * Gets a previously signed up user
      *
-     * @param { username, password } object user details
+     * @param restaurantId string id
      * @returns {AxiosPromise<any>} resolves to a user entity
      */
     getExpandedRestaurant(restaurantId) {
         return AppAPI.unwrapData(
             axios.get(this.makeUrl(`view-restaurant/${restaurantId}`)),
+        );
+    }
+
+    /**
+     * Favourites a restaurant for a signed up user
+     *
+     * @param restaurantId string id
+     * @param userId string id
+     * @returns {AxiosPromise<any>} resolves to a list of favourited restaurants
+     */
+    favouriteRestaurant(restaurantId, userId) {
+        return AppAPI.unwrapData(
+            axios.post(this.makeUrl(`user/${userId}/like-restaurant/${restaurantId}`), null),
+        );
+    }
+
+    /**
+     * Deletes a restaurant favourite for a signed up user
+     *
+     * @param restaurantId string id
+     * @param userId string id
+     * @returns {AxiosPromise<any>} resolves to a list of favourited restaurants
+     */
+    deleteRestaurantFavourite(restaurantId, userId) {
+        return AppAPI.unwrapData(
+            axios.delete(this.makeUrl(`user/${userId}/remove-liked-restaurant/${restaurantId}`)),
+        );
+    }
+
+    /**
+     * Favourites a food type at a given restaurant for a signed up user
+     *
+     * @param restaurantId string id
+     * @param userId string id
+     * @returns {AxiosPromise<any>} resolves to a list of favourited restaurants
+     */
+    favouriteFood(restaurantId, userId, foodType) {
+        return AppAPI.unwrapData(
+            axios.post(this.makeUrl(`user/${userId}/like-food/${restaurantId}`), {
+                food_type: foodType,
+            }),
+        );
+    }
+
+    /**
+     * Deletes a food favourite at a given restaurant for a signed up user
+     *
+     * @param restaurantId string id
+     * @param userId string id
+     * @returns {AxiosPromise<any>} resolves to a list of favourited restaurants
+     */
+    deleteFoodFavourite(restaurantId, userId, foodType) {
+        return AppAPI.unwrapData(
+            axios.delete(this.makeUrl(`user/${userId}/restaurant/${restaurantId}/remove-fave-food/${foodType}`)),
         );
     }
 }
