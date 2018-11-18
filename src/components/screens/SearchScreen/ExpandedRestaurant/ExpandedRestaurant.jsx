@@ -224,6 +224,7 @@ class ExpandedRestaurant extends Component {
 ExpandedRestaurant.defaultProps = {
     id: null,
     restaurantDetails: null,
+    user: null,
 };
 
 ExpandedRestaurant.propTypes = {
@@ -237,7 +238,7 @@ ExpandedRestaurant.propTypes = {
         id: PropTypes.string,
         likedRestaurants: PropTypes.arrayOf(PropTypes.shape({})),
         favouritedFoods: PropTypes.arrayOf(PropTypes.shape({})),
-    }).isRequired,
+    }),
     restaurantDetails: PropTypes.shape({
         restaurantName: PropTypes.string,
         OpenHours: PropTypes.arrayOf(PropTypes.shape({
