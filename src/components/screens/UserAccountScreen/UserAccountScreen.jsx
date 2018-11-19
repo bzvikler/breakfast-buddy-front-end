@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
     Heading,
     Box,
@@ -9,8 +10,14 @@ import {
     Button,
     TextInput,
     FormField,
+    Text,
 } from 'grommet';
-import { UserFemale, Edit, Checkmark } from 'grommet-icons';
+import {
+    UserFemale,
+    Edit,
+    Checkmark,
+    Close,
+} from 'grommet-icons';
 
 import PulseLoader from '../../common/PulseLoader/PulseLoader';
 import {
@@ -18,6 +25,12 @@ import {
     asyncEditProfile,
 } from '../../../store/UserAccount/user-account-actions';
 import './UserAccountScreen.css';
+
+const linkStyle = {
+    textDecoration: 'none',
+    outline: 'none',
+    color: 'inherit',
+};
 
 class UserAccountScreen extends Component {
     constructor(props) {
@@ -30,6 +43,7 @@ class UserAccountScreen extends Component {
         };
 
         this.toggleEdit = this.toggleEdit.bind(this);
+        this.cancelEdit = this.cancelEdit.bind(this);
     }
 
     componentDidMount() {
@@ -64,6 +78,13 @@ class UserAccountScreen extends Component {
         }));
     }
 
+    cancelEdit() {
+        this.setState(prevState => ({
+            ...prevState,
+            isEditing: false,
+        }));
+    }
+
     render() {
         const {
             username,
@@ -73,6 +94,7 @@ class UserAccountScreen extends Component {
 
         const {
             profile,
+            user,
         } = this.props;
 
         return (
@@ -107,6 +129,34 @@ class UserAccountScreen extends Component {
                             }
                         </Box>
                     </Button>
+                    {
+                        isEditing && (
+                            <Button
+                                plain
+                                margin={{ left: 'auto' }}
+                                onClick={this.cancelEdit}
+                                style={{
+                                    position: 'absolute',
+                                    top: '72px',
+                                    right: '12px',
+                                }}
+                                size="small"
+                            >
+                                <Box
+                                    elevation="small"
+                                    align="center"
+                                    justify="center"
+                                    style={{
+                                        borderRadius: '50%',
+                                        display: 'inline-flex',
+                                    }}
+                                    pad="medium"
+                                >
+                                    <Close />
+                                </Box>
+                            </Button>
+                        )
+                    }
                     <Heading
                         size="large"
                         alignSelf="center"
@@ -179,36 +229,100 @@ class UserAccountScreen extends Component {
                         basis="full"
                         margin={{ top: 'auto' }}
                     >
-                        <Tabs>
-                            <Tab title="My Spots">
-                                <Box margin="small" pad="large" align="center" background="accent-1">
-                                    <Heading>Hey</Heading>
+                        <Tabs basis="full">
+                            <Tab title={user.owner ? 'My Restaurants' : 'My Spots'}>
+                                <Box margin="small" pad="medium">
+                                    {
+                                        profile.restaurants.map(restaurant => (
+                                            <Link
+                                                to={`restaurant/${restaurant.rid}`}
+                                                key={restaurant.rid}
+                                                style={linkStyle}
+                                            >
+                                                <Box
+                                                    margin={{ bottom: 'small' }}
+                                                    border="bottom"
+                                                    justify="center"
+                                                >
+                                                    <Text>{restaurant.name}</Text>
+                                                </Box>
+                                            </Link>
+                                        ))
+                                    }
+                                    {
+                                        user.owner && (
+                                            <Box align="center">
+                                                <Link
+                                                    to="/account/add-restaurant"
+                                                    style={linkStyle}
+                                                >
+                                                    <Button label="Add Restaurant" primary />
+                                                </Link>
+                                            </Box>
+                                        )
+                                    }
                                 </Box>
                             </Tab>
-                            <Tab title="My Foods">
-                                <Box margin="small" pad="large" align="center" background="accent-2">
-                                    <Heading>Hey</Heading>
-                                </Box>
-                            </Tab>
-                            <Tab title="History">
-                                <Box margin="small" pad="large" align="center" background="accent-3">
-                                    <Heading>Hey</Heading>
-                                </Box>
-                            </Tab>
+                            {
+                                !user.owner && (
+                                    <Tab title="My Foods">
+                                        <Box margin="small" pad="medium">
+                                            {
+                                                profile.favFoods.map(food => (
+                                                    <Link
+                                                        to={`restaurant/${food.restaurantId}`}
+                                                        key={food.restaurantId}
+                                                        style={linkStyle}
+                                                    >
+                                                        <Box
+                                                            margin={{ bottom: 'small' }}
+                                                            border="bottom"
+                                                            justify="center"
+                                                        >
+                                                            <Text>{`${food.food_type[0].toUpperCase()}${food.food_type.slice(1)} at ${food.restaurantName}`}</Text>
+                                                        </Box>
+                                                    </Link>
+                                                ))
+                                            }
+                                        </Box>
+                                    </Tab>
+                                )
+                            }
+                            {
+                                !user.owner && (
+                                    <Tab title="History">
+                                        <Box margin="small" pad="medium">
+                                            {
+                                                profile.searches.map(search => (
+                                                    <Box
+                                                        key={search.sid}
+                                                        margin={{ bottom: 'small' }}
+                                                        border="bottom"
+                                                        justify="center"
+                                                    >
+                                                        <Text>{`at ${search.time} on ${search.day} around ${search.street} in ${search.city}`}</Text>
+                                                    </Box>
+                                                ))
+                                            }
+                                        </Box>
+                                    </Tab>
+                                )
+                            }
                         </Tabs>
                     </Box>
                 </Box>
             ) : (
-                <Box basis="full" justify="center" align="center">
-                    <PulseLoader color="brand" />
-                </Box>
-            )
+                    <Box basis="full" justify="center" align="center">
+                        <PulseLoader color="brand" />
+                    </Box>
+                )
         );
     }
 }
 
 UserAccountScreen.defaultProps = {
     profile: null,
+    user: null,
 };
 
 UserAccountScreen.propTypes = {
@@ -218,30 +332,34 @@ UserAccountScreen.propTypes = {
         password: PropTypes.string,
         name: PropTypes.string,
         img: PropTypes.string,
-        favRestaurants: PropTypes.arrayOf(PropTypes.shape({
+        restaurants: PropTypes.arrayOf(PropTypes.shape({
             rid: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired,
         })).isRequired,
-        // empty at first
         favFoods: PropTypes.arrayOf(PropTypes.shape({
             restaurantId: PropTypes.string.isRequired,
             restaurantName: PropTypes.string.isRequired,
             food_type: PropTypes.string.isRequired,
         })),
-        // empty at first
         searches: PropTypes.arrayOf(PropTypes.shape({
-            restaurantID: PropTypes.string.isRequired,
-            restaurantName: PropTypes.string.isRequired,
-            faveFood: PropTypes.string.isRequired,
-            closeTime: PropTypes.string.isRequired,
-            lat: PropTypes.number.isRequired,
-            lon: PropTypes.number.isRequired,
+            sid: PropTypes.string.isRequired,
+            street: PropTypes.string.isRequired,
+            city: PropTypes.string.isRequired,
+            day: PropTypes.string.isRequired,
+            time: PropTypes.string.isRequired,
         })),
+    }),
+    user: PropTypes.shape({
+        owner: PropTypes.bool,
     }),
 };
 
-const mapStateToProps = ({ profile: { profile } }) => ({
+const mapStateToProps = ({
+    profile: { profile },
+    login: { user },
+}) => ({
     profile,
+    user,
 });
 
 export default connect(mapStateToProps, {

@@ -6,6 +6,8 @@ import {
     USER_LOG_OUT,
 } from './login-types';
 
+import { EDIT_PROFILE_SUCCESS } from '../UserAccount/user-account-types';
+
 import {
     FAVOURITE_RESTAURANT_SUCCESS,
     FAVOURITE_FOOD_SUCCESS,
@@ -64,6 +66,14 @@ const LoginReducer = (state = INITIAL_STATE, { type, payload }) => {
                 user: {
                     ...state.user,
                     favouritedFoods: payload,
+                },
+            };
+        case EDIT_PROFILE_SUCCESS:
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    name: payload.name,
                 },
             };
         default:

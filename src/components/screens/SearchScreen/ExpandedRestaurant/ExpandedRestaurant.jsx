@@ -10,12 +10,14 @@ import {
 import {
     LinkPrevious,
     Favorite,
+    Trash,
 } from 'grommet-icons';
 
 import {
     asyncGetExpandedRestaurant,
     asyncFavouriteRestaurant,
     asyncFavouriteFood,
+    asyncRemoveRestaurant,
 } from '../../../../store/ExpandedRestaurant/expanded-restaurant-actions';
 import ExpandedRestaurantLoader from '../ExpandedRestaurantLoader';
 import './ExpandedRestaurant.css';
@@ -27,6 +29,8 @@ class ExpandedRestaurant extends Component {
         this.handleLikeRestaurant = this.handleLikeRestaurant.bind(this);
         this.handleFavouriteFood = this.handleFavouriteFood.bind(this);
         this.canInteract = this.canInteract.bind(this);
+        this.doesOwn = this.doesOwn.bind(this);
+        this.handleRemoveRestaurant = this.handleRemoveRestaurant.bind(this);
     }
 
     componentDidMount() {
@@ -64,6 +68,21 @@ class ExpandedRestaurant extends Component {
         }
 
         return false;
+    }
+
+    doesOwn() {
+        const { user, id } = this.props;
+
+        if (user.owner) {
+            return user.ownedRestaurants
+                .find(restaurant => restaurant.rid.trim() === id.trim());
+        }
+
+        return false;
+    }
+
+    handleRemoveRestaurant() {
+        this.props.asyncRemoveRestaurant(this.props.id, this.props.history);
     }
 
     isFoodFavourited(foodType) {
@@ -134,6 +153,15 @@ class ExpandedRestaurant extends Component {
                                                 />
                                             )}
                                             onClick={this.handleLikeRestaurant}
+                                            margin={{ left: 'auto' }}
+                                        />
+                                    )
+                                }
+                                {
+                                    this.doesOwn() && (
+                                        <Button
+                                            icon={(<Trash />)}
+                                            onClick={this.handleRemoveRestaurant}
                                             margin={{ left: 'auto' }}
                                         />
                                     )
@@ -276,6 +304,10 @@ ExpandedRestaurant.propTypes = {
             food_type: PropTypes.string.isRequired,
         })),
     }),
+    history: PropTypes.shape({
+        push: PropTypes.func.isRequired,
+    }).isRequired,
+    asyncRemoveRestaurant: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = ({
@@ -298,4 +330,5 @@ export default connect(mapStateToProps, {
     asyncGetExpandedRestaurant,
     asyncFavouriteRestaurant,
     asyncFavouriteFood,
+    asyncRemoveRestaurant,
 })(ExpandedRestaurant);

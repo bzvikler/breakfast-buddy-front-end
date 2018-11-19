@@ -17,6 +17,7 @@ import Navbar from './Navbar/NavBar';
 import SearchScreen from '../screens/SearchScreen/SearchScreen';
 import LoginScreen from '../screens/LoginScreen/LoginScreen';
 import UserAccountScreen from '../screens/UserAccountScreen/UserAccountScreen';
+import AddRestaurantScreen from '../screens/AddRestaurantScreen/AddRestaurantScreen';
 
 import './AppShell.css';
 
@@ -53,6 +54,7 @@ class AppShell extends Component {
                     <Route exact path="/restaurant/:id" component={SearchScreen} />
                     <Route exact path="/login" component={LoginScreen} />
                     <Route exact path="/account" component={UserAccountScreen} />
+                    <Route exact path="/account/add-restaurant" component={AddRestaurantScreen} />
                 </Switch>
             </div>
         );

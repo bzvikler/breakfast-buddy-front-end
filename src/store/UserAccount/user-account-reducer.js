@@ -27,11 +27,20 @@ const UserAccountReducer = (state = INITIAL_STATE, { type, payload }) => {
                 gettingProfile: false,
             };
         case GET_PROFILE_SUCCESS:
-        case EDIT_PROFILE_SUCCESS:
             return {
                 ...state,
                 profile: payload,
                 gettingProfile: false,
+            };
+        case EDIT_PROFILE_SUCCESS:
+            return {
+                ...state,
+                profile: {
+                    ...payload,
+                    restaurants: state.profile.restaurants,
+                    favFoods: state.profile.favFoods,
+                    searches: state.profile.searches,
+                },
             };
         default:
             return state;

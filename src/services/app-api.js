@@ -134,14 +134,26 @@ class AppAPI {
     }
 
     /**
-     * Gets a profile
+     * Gets a user profile
      *
      * @param userId string id
      * @returns {AxiosPromise<any>} resolves to a user profile entity
      */
-    getProfile(userId) {
+    getUserProfile(userId) {
         return AppAPI.unwrapData(
             axios.get(this.makeUrl(`user-profile/${userId}`)),
+        );
+    }
+
+    /**
+     * Gets an owner profile
+     *
+     * @param userId string id
+     * @returns {AxiosPromise<any>} resolves to a user profile entity
+     */
+    getOwnerProfile(userId) {
+        return AppAPI.unwrapData(
+            axios.get(this.makeUrl(`owner-profile/${userId}`)),
         );
     }
 
@@ -152,9 +164,48 @@ class AppAPI {
     * @param { username, password, name, img, } object user profile details
      * @returns {AxiosPromise<any>} resolves to a user profile entity
      */
-    editProfile(userId, profile) {
+    editUserProfile(userId, profile) {
         return AppAPI.unwrapData(
             axios.post(this.makeUrl(`user-profile/${userId}/edit`), profile),
+        );
+    }
+
+    /**
+     * Posts a new owner with edits
+     *
+     * @param userId string id
+     * @param { username, password, name, img, } object user profile details
+     * @returns {AxiosPromise<any>} resolves to a user profile entity
+     */
+    editOwnerProfile(userId, profile) {
+        return AppAPI.unwrapData(
+            axios.post(this.makeUrl(`owner-profile/${userId}/edit`), profile),
+        );
+    }
+
+    /**
+     * Deletes a restaurant owned by a given owner
+     *
+     * @param restaurantId string id
+     * @param userId string id of the owner
+     * @returns {AxiosPromise<any>} resolves to a list of favourited restaurants
+     */
+    removeRestaurant(restaurantId, userId) {
+        return AppAPI.unwrapData(
+            axios.delete(this.makeUrl(`owner/${userId}/remove-restaurant/${restaurantId}`)),
+        );
+    }
+
+    /**
+     * Posts a new restaurant
+     *
+     * @param userId string id
+     * @param { someStuff } object restaurant
+     * @returns {AxiosPromise<any>} resolves to a user profile entity
+     */
+    addRestaurant(userId, restaurantDetails) {
+        return AppAPI.unwrapData(
+            axios.post(this.makeUrl(`${userId}/add-restaurant`), restaurantDetails),
         );
     }
 }

@@ -8,6 +8,9 @@ import {
     FAVOURITE_FOOD_REQUEST,
     FAVOURITE_FOOD_SUCCESS,
     FAVOURITE_FOOD_FAILURE,
+    REMOVE_RESTAURANT_REQUEST,
+    REMOVE_RESTAURANT_SUCCESS,
+    REMOVE_RESTAURANT_FAILURE,
 } from './expanded-restaurant-types';
 
 const expandedRestaurantSuccess = restaurant => ({
@@ -87,6 +90,32 @@ export const asyncFavouriteFood = ({ type, restaurantId }) => (
             console.log('food favourite request failed: ', error);
 
             dispatch({ type: FAVOURITE_FOOD_FAILURE });
+        }
+    }
+);
+
+export const asyncRemoveRestaurant = (restaurantId, history) => (
+    async (dispatch, getState, { AppApi }) => {
+        dispatch({ type: REMOVE_RESTAURANT_REQUEST });
+
+        try {
+            const {
+                login: {
+                    user: {
+                        id,
+                    },
+                },
+            } = getState();
+
+            const restaurants = await AppApi.removeRestaurant(restaurantId, id);
+
+            dispatch({ type: REMOVE_RESTAURANT_SUCCESS, payload: restaurants });
+
+            history.push('/account');
+        } catch (error) {
+            console.log('expanded restaurant request failed: ', error);
+
+            dispatch({ type: REMOVE_RESTAURANT_FAILURE });
         }
     }
 );
