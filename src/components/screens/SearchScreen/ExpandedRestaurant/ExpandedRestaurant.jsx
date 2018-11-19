@@ -74,8 +74,9 @@ class ExpandedRestaurant extends Component {
         const { user, id } = this.props;
 
         if (user.owner) {
-            return user.ownedRestaurants
-                .find(restaurant => restaurant.rid.trim() === id.trim());
+            return user.ownedRestaurants ?
+                user.ownedRestaurants.find(restaurant => restaurant.rid.trim() === id.trim()) :
+                false;
         }
 
         return false;
