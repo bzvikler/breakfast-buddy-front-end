@@ -11,7 +11,7 @@ import {
     Text,
 } from 'grommet';
 
-import { asyncLoginUser, asyncSignUpUser } from '../../../store/Login/login-actions';
+import { asyncAddRestaurant } from '../../../store/UserAccount/user-account-actions';
 import PulseLoader from '../../common/PulseLoader/PulseLoader';
 
 
@@ -32,6 +32,7 @@ class AddRestaurantScreen extends Component {
         this.onStreetNameChange = this.onStreetNameChange.bind(this);
         this.onCityChange = this.onCityChange.bind(this);
         this.onPostalCodeChange = this.onPostalCodeChange.bind(this);
+        this.onAdd = this.onAdd.bind(this);
     }
 
     onRestaurantNameChange(restaurantName) {
@@ -67,6 +68,10 @@ class AddRestaurantScreen extends Component {
             ...prevState,
             postalCode,
         }));
+    }
+
+    onAdd() {
+        this.props.asyncAddRestaurant(this.state, this.props.history);
     }
 
     render() {
@@ -177,7 +182,7 @@ class AddRestaurantScreen extends Component {
                         />
                     </FormField>
                     <CSSTransition
-                        in
+                        in={false}
                         timeout={300}
                         classNames="password-mismatch"
                         mountOnEnter
@@ -227,8 +232,7 @@ AddRestaurantScreen.defaultProps = {
 };
 
 AddRestaurantScreen.propTypes = {
-    asyncLoginUser: PropTypes.func.isRequired,
-    asyncSignUpUser: PropTypes.func.isRequired,
+    asyncAddRestaurant: PropTypes.func.isRequired,
     loggingIn: PropTypes.bool,
 };
 
@@ -238,6 +242,5 @@ const mapStateToProps = ({ login: { loggingIn, user } }) => ({
 });
 
 export default connect(mapStateToProps, {
-    asyncLoginUser,
-    asyncSignUpUser,
+    asyncAddRestaurant,
 })(AddRestaurantScreen);
